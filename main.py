@@ -36,10 +36,19 @@ gl.init(screen)
 
 
 
+pos = numpy.ndarray((640*480, 1), dtype=numpy.float32)
+self.pos_vbo = vbo.VBO(data=pos, usage=GL_DYNAMIC_DRAW, target=GL_ARRAY_BUFFER)
+self.pos_vbo.bind()
+#same shit, different toilet
+self.col_vbo = vbo.VBO(data=pos, usage=GL_DYNAMIC_DRAW, target=GL_ARRAY_BUFFER)
+self.col_vbo.bind()
+        
+
+
 import kinect
-example = kinect.CL()
+example = kinect.Kinect("calibrate.cl")
 #example.loadProgram("calibrate.cl")
-#example.loadData(pos_vbo, col_vbo, vel)
+example.loadData(pos_vbo, col_vbo, vel)
 #print example.pos_vbo.data
 
 
@@ -96,7 +105,7 @@ def get_input():
 def draw():
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-    #example.execute()
+    example.execute()
 
     #glColor3f(1,0,0)
     gl.draw_axes()
