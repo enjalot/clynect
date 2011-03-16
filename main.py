@@ -54,14 +54,10 @@ class window(object):
 
          
         #create our OpenCL instance
-        kin = kinect.Kinect()
+        self.kin = kinect.Kinect()
         self.cle = kinect.CL()
-        self.cle.loadData(kin.pos_vbo, kin.col_vbo)
+        self.cle.loadData(self.kin.pos_vbo, self.kin.col_vbo)
 
-
-        #(pos_vbo, col_vbo, vel) = initialize.fountain(num)
-        #self.cle = part2.Part2(num, dt, "part2.cl")
-        #self.cle.loadData(pos_vbo, col_vbo, vel)
 
         glutMainLoop()
         
@@ -112,6 +108,11 @@ class window(object):
     def draw(self):
         """Render the particles"""        
         #update or particle positions by calling the OpenCL kernel
+        rgb, depth = self.kin.get_particles()
+        self.cle.load_images(rgb, depth)
+        self.cle.execute(1)
+
+
         #self.cle.execute(1) 
         glFlush()
 

@@ -21,34 +21,38 @@ __kernel void project( __global float4* kin,
                     int w,
                     int h)
 {
+#if 1
     unsigned int i = get_global_id(0);
-    
     int c = i % w;
     int r = (int)(i / w);
     //int r = i % h;
     //int c = (int)(i / w);
 
+    //float ptd[] = { 485.377991f, 7.568644, 0.013969, 0.000000, 11.347664, -474.452148, 0.024067, 0.000000, -312.743378, -279.984619, -0.999613, 0.000000, -8.489457, 2.428294, 0.009412, 1.000000 };
+    //float iptd[] = { 0.001845f, -0.000000, -0.000000, 0.000000, 0.000000, -0.001848, -0.000000, 0.000000, -0.575108, 0.489076, -1.000000, 0.000000, 0.000000, -0.000000, -0.000000, 1.000000 } ;
 
 
-    float d = depth[i];
+
+
+    float d = depth[i]/255.;
     int irgb = i*3;
-    //irgb = r*(w*3) + c*3;
     float4 col = (float4)(rgb[irgb+2]/255.f, rgb[irgb+1]/255.f, rgb[irgb]/255.f, 1.0f);
-    //col.y = 1;
-    color[i] = col;
-    //color[i] = (float4)(d/3., d/3., d/3., 1);
-    //kin[i] = (float4)(d*c/w, d*r/h, d, 1);
-    kin[i] = (float4)(1.5*c/w, 1.5*r/h, 0, 1);
+    //color[i] = col;
+    //kin[i] = (float4)(1.5*c/w, 1.5*r/h, d/255, 1);
+    //kin[i] = (float4)(1.5*c/w, 1.5*r/h, 0, 1);
     //color[i] = (float4)(1,0,0,0);
     //kin[i] = (float4)(0,0,0,0);
+
 #if 1
     //unproject from depth, in place
-    float4 epix = (float4)(d*c, d*r, d, 1);
+    float4 epix = (float4)(d*c, d*r, d, 1.0f);
     kin[i] = matmult4(ipt, epix);
-    kin[i].w = 1;
+    //kin[i] = matmult4(iptd, epix);
+    kin[i].w = 1.f;
 
 
     epix = matmult4(pt, kin[i]);
+    //epix = matmult4(ptd, kin[i]);
     int x = (int)(epix.x/epix.z);
     int y = (int)(epix.y/epix.z);
  
@@ -64,12 +68,19 @@ __kernel void project( __global float4* kin,
         color[i].x = rgb[irgb+2]/255.;
         color[i].y = rgb[irgb+1]/255.;
         color[i].z = rgb[irgb]/255.;
+        color[i].w = 1.0f;
         //color[i] = (float4)(0,1,0,1);
     }
     else
     {
-        color[i] = (float4)(0,0,1,1);
+        color[i] = (float4)(0.f,0.f,1.f,1.f);
     }
+
+    //color[i] = (float4)(1.f, 1.f, 1.f, 1.f);
+
+#endif
+
+
 
 #endif
 }
