@@ -29,28 +29,46 @@ class Kinect(object):
 
     def get_depth(self):
         if len(freenect.sync_get_depth()) > 0:
-            return frame_convert.pretty_depth_cv(freenect.sync_get_depth()[0])
+            depth = freenect.sync_get_depth()[0]
+            #numpy.clip(depth, 0, 2**10 - 1, depth)
+            #depth >>= 2
+            #print depth[0][0]
+            return depth.astype(numpy.float32)/2048.
+
+            #print "return from get depth"
+            #return numpy.array(depth, dtype=numpy.float32)
+            #return frame_convert.pretty_depth_cv(freenect.sync_get_depth()[0])
         return None
 
     def get_video(self):
         if len(freenect.sync_get_video()) > 0:
-            return frame_convert.video_cv(freenect.sync_get_video()[0])
+            rgb = freenect.sync_get_video()[0]
+            rgb = rgb[:, :, ::-1]  # RGB -> BGR
+            return rgb.astype(numpy.int8)
+            #return frame_convert.video_cv(freenect.sync_get_video()[0])
         return None
 
     def get_particles(self):
         depth = self.get_depth()
         rgb = self.get_video()
-        print type(depth)
-        print dir(depth)
-        #print "depth im.depth", depth.depth
-        #print "rgb im.depth", rgb.depth
+        #print "d.depth", depth.depth
+        #print "d.channels", depth.nChannels
 
+        #print "rgb.depth", rgb.depth
+        #print "rgb.channels", rgb.nChannels
+
+
+        #print "rgb im.depth", rgb.depth
+        #dnp = numpy.fromstring(depth.tostring(), dtype=numpy.int8, count=depth.width*depth.height*depth.nChannels)
+        #rgbnp = numpy.fromstring(rgb.tostring(), dtype=numpy.int8, count=rgb.width*rgb.height*rgb.nChannels)
+        return rgb, depth
+    
         #TODO: Get the depth as float between 0 and 1 instead of int between 0 and 255
-        di = Image.fromstring("L", cv.GetSize(depth), depth.tostring())
-        rgbi = Image.fromstring("RGB", cv.GetSize(rgb), rgb.tostring())
+        #di = Image.fromstring("L", cv.GetSize(depth), depth.tostring())
+        #rgbi = Image.fromstring("RGB", cv.GetSize(rgb), rgb.tostring())
         #di.show()
         #rgbi.show()
-        return numpy.array(rgbi, dtype=numpy.int8), numpy.array(di, dtype=numpy.float32)
+        #return numpy.array(rgbi, dtype=numpy.int8), numpy.array(di, dtype=numpy.float32)
 
 
 

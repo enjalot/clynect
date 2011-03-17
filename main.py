@@ -59,6 +59,13 @@ class window(object):
         self.cle.loadData(self.kin.pos_vbo, self.kin.col_vbo)
 
 
+        #testing
+        #rgb, depth = self.kin.get_particles()
+        #self.cle.load_images(rgb, depth)
+        #self.cle.execute(1)
+
+
+
         glutMainLoop()
         
 

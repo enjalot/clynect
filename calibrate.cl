@@ -32,9 +32,7 @@ __kernel void project( __global float4* kin,
     //float iptd[] = { 0.001845f, -0.000000, -0.000000, 0.000000, 0.000000, -0.001848, -0.000000, 0.000000, -0.575108, 0.489076, -1.000000, 0.000000, 0.000000, -0.000000, -0.000000, 1.000000 } ;
 
 
-
-
-    float d = depth[i]/255.;
+    float d = depth[i];///255.;
     int irgb = i*3;
     float4 col = (float4)(rgb[irgb+2]/255.f, rgb[irgb+1]/255.f, rgb[irgb]/255.f, 1.0f);
     //color[i] = col;
